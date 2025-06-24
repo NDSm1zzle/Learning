@@ -10,6 +10,7 @@ import React, {
   ChangeEvent,
   JSX,
 } from "react";
+import { formatCurrency } from "@/utils/formatters"; // Import the formatter
 import Link from "next/link";
 import { Plus, Users, Trash2 } from "lucide-react";
 import { useAuth, SignInButton } from "@clerk/nextjs";
@@ -157,7 +158,7 @@ export default function BudgetsPage(): JSX.Element {
                 >
                   <p className="font-medium">{b.name}</p>
                   <p className="text-sm text-gray-500">
-                    ${b.targetAmount.toLocaleString()} target · {b.members?.length ?? 0}{" "}
+                    {formatCurrency(b.targetAmount)} target · {b.members?.length ?? 0}{" "}
                     member{(b.members?.length ?? 0) !== 1 && "s"}
                   </p>
                 </Link>
