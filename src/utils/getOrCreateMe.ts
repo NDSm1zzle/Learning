@@ -5,12 +5,21 @@ import { eq } from "drizzle-orm";
 export async function getOrCreateMe() {
     const { userId: clerkId } = await auth();
 
-    // If no clerkId is available, it means the user is not authenticated.
+    // User is not authenticated.
     if (!clerkId) {
         return null;
     }
 
-    const clerkUser = await clerkClient.users.getUser(clerkId);
+    // The `clerkClient` from Clerk should be an object, but it seems TypeScript
+    // is incorrectly inferring it as a function: `() => Promise<ClerkClient>`.
+    // To resolve this specific compilation error, we will call it as a function.
+    const client = await clerkClient();
+
+    if (!client.users) {
+        console.error("Clerk client users API is not available. Check Clerk Secret Key configuration.");
+        return null;
+    }
+    const clerkUser = await client.users.getUser(clerkId);
 
     const primaryEmail = clerkUser.emailAddresses.find(
         (e) => e.id === clerkUser.primaryEmailAddressId

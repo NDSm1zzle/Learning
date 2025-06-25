@@ -2,8 +2,8 @@ import { db } from "@/utils/dbconfig";
 import { budgets, budgetMembers } from "@/utils/budget";
 import { transactions } from "@/utils/transaction";
 import { getOrCreateMe } from "@/utils/getOrCreateMe";
-import { eq, and, sql, desc } from "drizzle-orm";
-import { NextResponse } from "next/server"; // Import NextResponse for better error handling
+import { eq, sql, desc } from "drizzle-orm";
+import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export async function GET() {
     const me = await getOrCreateMe();
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
             role: 'owner', // Assign 'owner' role to the creator
         }).execute();
 
-        return NextResponse.json(newBudget, { status: 201 }); // 201 Created for successful resource creation
+        return NextResponse.json(newBudget, { status: 201 });
     } catch (error: unknown) {
         console.error("Error creating budget:", error);
         return NextResponse.json({ error: "Internal Server Error: Could not create budget.", details: (error as Error).message }, { status: 500 });

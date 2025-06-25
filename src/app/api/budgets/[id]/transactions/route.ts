@@ -68,7 +68,6 @@ export async function POST(req: Request, { params }: { params: { id: string } })
 
     const body = await req.json();
 
-    // Input validation
     if (typeof body.amount !== "number" || body.amount === 0) {
       return NextResponse.json({ error: "Amount must be a non-zero number." }, { status: 400 });
     }

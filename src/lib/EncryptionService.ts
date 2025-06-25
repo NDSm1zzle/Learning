@@ -9,7 +9,6 @@ export class EncryptionService {
     this.algorithm = algorithm;
   }
   public encrypt(plainText: string): string {
-    // Generate a random IV for the encryption
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv(this.algorithm, this.secretKey, iv);
 

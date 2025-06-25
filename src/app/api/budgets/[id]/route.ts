@@ -20,7 +20,6 @@ export async function GET(
     return NextResponse.json({ error: "Invalid budget ID" }, { status: 400 });
   }
 
-  // Check if user is a member of the budget
   const [membership] = await db
     .select({ id: budgetMembers.id })
     .from(budgetMembers)

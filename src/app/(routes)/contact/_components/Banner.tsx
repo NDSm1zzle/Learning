@@ -1,8 +1,6 @@
 import React from 'react'
 
-// Banner functional component
-// This component serves as a promotional section for the LevelUp Budget application
-function Banner() { // Removed verbose comment
+function Banner() {
     return (
         <section className="flex items-center flex-col">
             
