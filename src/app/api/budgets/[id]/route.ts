@@ -6,11 +6,6 @@ import { eq, and, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
-
-/**
- * GET /api/budgets/[id]
- * Fetches a single budget by its ID for the currently authenticated user.
- */
 export async function GET(
   req: Request,
   { params }: { params: { id: string } }
@@ -25,7 +20,7 @@ export async function GET(
     return NextResponse.json({ error: "Invalid budget ID" }, { status: 400 });
   }
 
-  /* Check if user is a member of the budget */
+  // Check if user is a member of the budget
   const [membership] = await db
     .select({ id: budgetMembers.id })
     .from(budgetMembers)
@@ -42,7 +37,6 @@ export async function GET(
     .select({
       id: budgets.id,
       name: budgets.name,
-      // Convert from cents to dollars/euros for API response
       targetAmount: sql<number>`${budgets.targetAmount} / 100.0`.as("targetAmount"),
       spent: sql<number>`COALESCE(SUM(${transactions.amount}), 0) / 100.0`.as("spent"),
       ownerId: budgets.ownerId,
@@ -59,11 +53,6 @@ export async function GET(
 
   return NextResponse.json(row);
 }
-
-/**
- * DELETE /api/budgets/[id]
- * Deletes a budget by its ID. Only the owner can perform this action.
- */
 export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
@@ -79,7 +68,6 @@ export async function DELETE(
       return NextResponse.json({ error: "Invalid budget ID" }, { status: 400 });
     }
 
-    // First, verify the user is the owner of the budget.
     const [budget] = await db
       .select({ ownerId: budgets.ownerId })
       .from(budgets)
@@ -93,13 +81,10 @@ export async function DELETE(
       return NextResponse.json({ error: "Forbidden: Only the owner can delete this budget." }, { status: 403 });
     }
 
-    // If ownership is confirmed, delete the budget.
-    // Your schema's `onDelete: "cascade"` will handle related members, invites, and transactions.
     await db.delete(budgets).where(eq(budgets.id, budgetId));
 
     return NextResponse.json({ message: "Budget deleted successfully" }, { status: 200 });
-  } catch (error: any) {
-    console.error("Error deleting budget:", error);
-    return NextResponse.json({ error: "Internal Server Error", details: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    return NextResponse.json({ error: "Internal Server Error", details: (error as Error).message }, { status: 500 });
   }
 }

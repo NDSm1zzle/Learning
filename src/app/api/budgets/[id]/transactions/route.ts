@@ -15,10 +15,6 @@ async function checkMembership(userId: number, budgetId: number) {
   return !!membership;
 }
 
-/**
- * GET /api/budgets/[id]/transactions
- * Fetches all transactions for a given budget.
- */
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   const me = await getOrCreateMe();
   if (!me) {
@@ -41,7 +37,6 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     .select({
       id: transactions.id,
       budgetId: transactions.budgetId,
-      // Convert from cents to dollars/euros for API response
       amount: sql<number>`${transactions.amount} / 100.0`.as("amount"),
       description: transactions.description,
       createdAt: transactions.createdAt,
@@ -52,11 +47,6 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
   return NextResponse.json(rows);
 }
-
-/**
- * POST /api/budgets/[id]/transactions
- * Creates a new transaction for a given budget.
- */
 export async function POST(req: Request, { params }: { params: { id: string } }) {
   try {
     const me = await getOrCreateMe();
@@ -86,7 +76,6 @@ export async function POST(req: Request, { params }: { params: { id: string } })
       return NextResponse.json({ error: "Description must be a string." }, { status: 400 });
     }
 
-    // Convert amount from dollars/euros to cents to store as an integer
     const amountInCents = Math.round(body.amount * 100);
 
     const [newTransaction] = await db
@@ -99,7 +88,7 @@ export async function POST(req: Request, { params }: { params: { id: string } })
       .returning();
 
     return NextResponse.json(newTransaction, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error creating transaction:", error);
     return NextResponse.json(
       {
