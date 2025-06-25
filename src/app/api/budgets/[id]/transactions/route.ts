@@ -92,7 +92,7 @@ export async function POST(req: Request, { params }: { params: { id: string } })
     return NextResponse.json(
       {
         error: "Internal Server Error: Could not create transaction.",
-        details: error.message,
+        details: (error as Error).message,
       },
       { status: 500 }
     );
