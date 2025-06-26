@@ -80,11 +80,18 @@ Built using **Next.js**, **React**, **ShareDB**, **ExpressJS**, and **FastAPI**,
 
 ### 1. Start Backend Server (FastAPI)
 In the root backend directory, run:
+```bash
+cd backend
+uvicorn mainn:app --reload
+```
 
 
 ### 2. Start Frontend Server (Next.js/React)
 
 ```bash
+rm -rf node_modules
+rm package-lock.json
+npm install
 npm run dev
 ```
 
