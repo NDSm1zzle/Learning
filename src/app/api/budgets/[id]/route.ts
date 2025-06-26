@@ -8,14 +8,14 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } } // Accept the full context object
 ) {
   const me = await getOrCreateMe();
   if (!me) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const budgetId = Number(params.id);
+  const budgetId = Number(context.params.id);
   if (isNaN(budgetId)) {
     return NextResponse.json({ error: "Invalid budget ID" }, { status: 400 });
   }
@@ -54,7 +54,7 @@ export async function GET(
 }
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } } // Accept the full context object
 ) {
   try {
     const me = await getOrCreateMe();
@@ -62,7 +62,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const budgetId = Number(params.id);
+    const budgetId = Number(context.params.id);
     if (isNaN(budgetId)) {
       return NextResponse.json({ error: "Invalid budget ID" }, { status: 400 });
     }
